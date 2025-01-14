@@ -1,5 +1,0 @@
-<template>
-  <div>
-    <h1 class="text-3xl font-bold text-green-400 underline">Hello world!</h1>
-  </div>
-</template>
