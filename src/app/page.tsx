@@ -22,7 +22,7 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>("");
-  const conversationEndRef = useRef(null);
+  const conversationEndRef = useRef<HTMLDivElement | null>(null);
 
   const jilianData = {
     data: `
