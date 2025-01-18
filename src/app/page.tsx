@@ -41,7 +41,7 @@ const Home = () => {
         const data = await response.json();
         setAgentsData(data?.data || "No data available");
         setAgentsName(data?.user || "Agent");
-      } catch (error) {
+      } catch (error : string) {
         setError(error.message);
       }
     };
