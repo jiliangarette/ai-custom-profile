@@ -2,14 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { ArrowUp, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/app/components/ui/scroll-area";
+import ChatConversation from "./components/chat-conversation";
+import AiProfileName from "./components/ai-profile";
+import ChatInput from "./components/chat-input";
 
 const Home = () => {
   const [conversation, setConversation] = useState<
@@ -35,11 +31,11 @@ const Home = () => {
         setAgentsData(data?.data || "No data available");
         setAgentsName(data?.user || "Agent");
       } catch (error: unknown) {
-    if (error instanceof Error) {
-        setError(error.message);
-    } else {
-        setError("An unknown error occurred");
-    }
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       }
     };
 
@@ -170,60 +166,19 @@ const Home = () => {
 
   return (
     <div className="bg-gray h-screen w-screen fixed  sm:px-8 lg:px-40">
-      <h1 className="flex place-items-center justify-center text-md text-slate-600 sm:text-lg font-sans font-semibold right-0 left-0 fixed top-0 z-10 w-full h-12 lg:h-20   ">
-        Ask about {agentsName}
-      </h1>
-
+      <AiProfileName userProfileName={agentsName} />
       <ScrollArea className=" h-full p-2 pt-[52px] lg:pt-[84px] pb-[84px]  w-full">
-        <div className="h-full ">
-          <div className="flex flex-col gap-4 w-full mx-auto   h-full">
-            {conversation.map((item, index) => (
-              <div key={index} className="flex flex-col mb-4">
-                <div className=" text-slate-800 bg-slate-200 rounded-lg p-2 mr-2 px-4  self-end">
-                  {item.prompt}
-                </div>
-                {item.response && (
-                  <div className=" text-slate-700 p-3 rounded-md flex flex-row gap-2 self-start ">
-                    <strong className="block text-sm -mt-2 font-medium">
-                      <Avatar>
-                        <AvatarFallback>AI</AvatarFallback>
-                      </Avatar>
-                    </strong>
-                    <span className="chat-message-content overflow-x-auto max-w-[278px] sm:mx-w-[340px] lg:max-w-none  ">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {item.response}
-                      </ReactMarkdown>
-                    </span>
-                  </div>
-                )}
-              </div>
-            ))}
-            <div ref={conversationEndRef} />
-          </div>
-        </div>
+        <ChatConversation conversation={conversation}>
+          <div ref={conversationEndRef} />
+        </ChatConversation>
       </ScrollArea>
-      <div className="flex flex-col gap-2 lg:mx-auto rounded-t-md  h-20 bg-white mx-2 place-items-center justify-center z-10 fixed bottom-0 right-0 left-0">
-        <div className="flex  gap-2 w-full place-items-center justify-center  mx-auto">
-          {error && <p className="text-red-500  text-sm mt-2">{error}</p>}
-          <Input
-            type="text"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Enter question..."
-            className="rounded-full w-full md:min-w-2xl max-w-2xl px-4 sm:px-8 text-md sm:text-lg h-[60px] "
-          />
-          <Button
-            onClick={handleSubmit}
-            size="icon"
-            className="rounded-full p-4 flex items-center justify-center">
-            {loading ? (
-              <Loader2 className="animate-spin text-white" />
-            ) : (
-              <ArrowUp strokeWidth={3} />
-            )}
-          </Button>
-        </div>
-      </div>
+      <ChatInput
+        prompt={prompt}
+        setPrompt={setPrompt}
+        isLoading={loading}
+        handleSubmit={handleSubmit}>
+        {error && <p className="text-red-500 text-sm my-1">{error}</p>}
+      </ChatInput>
     </div>
   );
 };
