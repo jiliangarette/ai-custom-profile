@@ -41,8 +41,12 @@ const Home = () => {
         const data = await response.json();
         setAgentsData(data?.data || "No data available");
         setAgentsName(data?.user || "Agent");
-      } catch (error : unknown) {
+      } catch (error: unknown) {
+    if (error instanceof Error) {
         setError(error.message);
+    } else {
+        setError("An unknown error occurred");
+    }
       }
     };
 
