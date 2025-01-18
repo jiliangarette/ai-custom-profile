@@ -9,13 +9,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Home = () => {
@@ -41,8 +34,12 @@ const Home = () => {
         const data = await response.json();
         setAgentsData(data?.data || "No data available");
         setAgentsName(data?.user || "Agent");
-      } catch (error) {
-        setError(error.message);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       }
     };
 
@@ -65,7 +62,9 @@ const Home = () => {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       const customPrompt = `
-      Act as a human personality and mimics emotions and normal flow of conversation and act as Jilian Garette A. Abadia Abangan. 
+      Act as a human personality and mimics emotions and normal flow of conversation and act as person ${
+        agentsName || "user agent"
+      }. 
       
       Use simple language: Write plainly with short sentences.
       REQUIREMENTS
@@ -124,13 +123,21 @@ const Home = () => {
       - Add a small amount of redundancy in sentence structure or wording, but keep it minimal to avoid affecting readability
       - Include subtle, natural digressions or tangents, but ensure they connect back to the main point to maintain focus.
 
-       The following is a detailed JSON object containing all available information about Jilian:
+       The following is a detailed JSON object containing all available information about ${
+         agentsName || "user agent"
+       }:
 
       ${JSON.stringify(agentsData, null, 2)}
 
-      Respond to the user's questions based on this detailed information in the context of Jilian.
+      Respond to the user's questions based on this detailed information in the context of ${
+        agentsName || "user agent"
+      }.
       Be concise, accurate, and engaging.
-      Act as Jilian, be a Jilian, act as a human ai agent, dont tell you are an agent but tell you are an jilian, use bisaya english language only if users ask in bisaya language.
+      Act as ${agentsName || "user agent"}, be a ${
+        agentsName || "user agent"
+      }, act as a human ai agent, dont tell you are an agent but tell you are an ${
+        agentsName || "user agent"
+      }, use bisaya english language only if users ask in bisaya language.
 
       Now, answer the following prompt: ${userPrompt}
     `;
@@ -162,64 +169,61 @@ const Home = () => {
   }, [conversation]);
 
   return (
-    <div className="flex flex-col items-center w-screen h-screen justify-center ">
-      <Card className="w-full max-w-3xl p-6 flex flex-col gap-6 rounded-lg border-none shadow-none">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold text-slate-800 mx-auto">
-            Ask about {agentsName}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <ScrollArea className="  h-96 px-2">
-            <div className="flex flex-col gap-4 w-full mx-auto px-2">
-              {conversation.map((item, index) => (
-                <div key={index} className="flex flex-col mb-4">
-                  <div className=" text-slate-800 bg-slate-200 rounded-lg p-3  self-end">
-                    {item.prompt}
-                  </div>
-                  {item.response && (
-                    <div className=" text-slate-700 p-3 rounded-md flex flex-row gap-2 self-start ">
-                      <strong className="block text-sm -mt-2 font-medium">
-                        <Avatar>
-                          <AvatarFallback>AI</AvatarFallback>
-                        </Avatar>
-                      </strong>
-                      <span className="chat-message-content">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {item.response}
-                        </ReactMarkdown>
-                      </span>
-                    </div>
-                  )}
+    <div className="bg-gray h-screen w-screen fixed  sm:px-8 lg:px-40">
+      <h1 className="flex place-items-center justify-center text-md text-slate-600 sm:text-lg font-sans font-semibold right-0 left-0 fixed top-0 z-10 w-full h-12 lg:h-20   ">
+        Ask about {agentsName}
+      </h1>
+
+      <ScrollArea className=" h-full p-2 pt-[52px] lg:pt-[84px] pb-[84px]  w-full">
+        <div className="h-full ">
+          <div className="flex flex-col gap-4 w-full mx-auto   h-full">
+            {conversation.map((item, index) => (
+              <div key={index} className="flex flex-col mb-4">
+                <div className=" text-slate-800 bg-slate-200 rounded-lg p-2 mr-2 px-4  self-end">
+                  {item.prompt}
                 </div>
-              ))}
-              <div ref={conversationEndRef} />
-            </div>
-          </ScrollArea>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-4">
-          <div className="flex items-center gap-2 w-full">
-            <Input
-              type="text"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Enter your question here..."
-              className="rounded-full  px-4 sm:px-8 text-md sm:text-lg h-[60px] "
-            />
-            <Button
-              onClick={handleSubmit}
-              size="icon"
-              className="rounded-full p-4 flex items-center justify-center">
-              {loading ? (
-                <Loader2 className="animate-spin text-white" />
-              ) : (
-                <ArrowUp strokeWidth={3} />
-              )}
-            </Button>
+                {item.response && (
+                  <div className=" text-slate-700 p-3 rounded-md flex flex-row gap-2 self-start ">
+                    <strong className="block text-sm -mt-2 font-medium">
+                      <Avatar>
+                        <AvatarFallback>AI</AvatarFallback>
+                      </Avatar>
+                    </strong>
+                    <span className="chat-message-content overflow-x-auto max-w-[278px] sm:mx-w-[340px] lg:max-w-none  ">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {item.response}
+                      </ReactMarkdown>
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
+            <div ref={conversationEndRef} />
           </div>
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-        </CardFooter>
-      </Card>
+        </div>
+      </ScrollArea>
+      <div className="flex flex-col gap-2 lg:mx-auto rounded-t-md  h-20 bg-white mx-2 place-items-center justify-center z-10 fixed bottom-0 right-0 left-0">
+        <div className="flex  gap-2 w-full place-items-center justify-center  mx-auto">
+          {error && <p className="text-red-500  text-sm mt-2">{error}</p>}
+          <Input
+            type="text"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Enter question..."
+            className="rounded-full w-full md:min-w-2xl max-w-2xl px-4 sm:px-8 text-md sm:text-lg h-[60px] "
+          />
+          <Button
+            onClick={handleSubmit}
+            size="icon"
+            className="rounded-full p-4 flex items-center justify-center">
+            {loading ? (
+              <Loader2 className="animate-spin text-white" />
+            ) : (
+              <ArrowUp strokeWidth={3} />
+            )}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
