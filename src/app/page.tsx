@@ -2,21 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { ArrowUp, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/app/components/ui/scroll-area";
+import ChatConversation from "./components/chat-conversation";
+import AiProfileName from "./components/ai-profile";
+import ChatInput from "./components/chat-input";
 
 const Home = () => {
   const [conversation, setConversation] = useState<
@@ -42,11 +31,11 @@ const Home = () => {
         setAgentsData(data?.data || "No data available");
         setAgentsName(data?.user || "Agent");
       } catch (error: unknown) {
-    if (error instanceof Error) {
-        setError(error.message);
-    } else {
-        setError("An unknown error occurred");
-    }
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       }
     };
 
@@ -69,7 +58,9 @@ const Home = () => {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       const customPrompt = `
-      Act as a human personality and mimics emotions and normal flow of conversation and act as Jilian Garette A. Abadia Abangan. 
+      Act as a human personality and mimics emotions and normal flow of conversation and act as person ${
+        agentsName || "user agent"
+      }. 
       
       Use simple language: Write plainly with short sentences.
       REQUIREMENTS
@@ -128,13 +119,21 @@ const Home = () => {
       - Add a small amount of redundancy in sentence structure or wording, but keep it minimal to avoid affecting readability
       - Include subtle, natural digressions or tangents, but ensure they connect back to the main point to maintain focus.
 
-       The following is a detailed JSON object containing all available information about Jilian:
+       The following is a detailed JSON object containing all available information about ${
+         agentsName || "user agent"
+       }:
 
       ${JSON.stringify(agentsData, null, 2)}
 
-      Respond to the user's questions based on this detailed information in the context of Jilian.
+      Respond to the user's questions based on this detailed information in the context of ${
+        agentsName || "user agent"
+      }.
       Be concise, accurate, and engaging.
-      Act as Jilian, be a Jilian, act as a human ai agent, dont tell you are an agent but tell you are an jilian, use bisaya english language only if users ask in bisaya language.
+      Act as ${agentsName || "user agent"}, be a ${
+        agentsName || "user agent"
+      }, act as a human ai agent, dont tell you are an agent but tell you are an ${
+        agentsName || "user agent"
+      }, use bisaya english language only if users ask in bisaya language.
 
       Now, answer the following prompt: ${userPrompt}
     `;
@@ -166,64 +165,20 @@ const Home = () => {
   }, [conversation]);
 
   return (
-    <div className="flex flex-col items-center w-screen h-screen justify-center ">
-      <Card className="w-full max-w-3xl p-6 flex flex-col gap-6 rounded-lg border-none shadow-none">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold text-slate-800 mx-auto">
-            Ask about {agentsName}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <ScrollArea className="  h-96 px-2">
-            <div className="flex flex-col gap-4 w-full mx-auto px-2">
-              {conversation.map((item, index) => (
-                <div key={index} className="flex flex-col mb-4">
-                  <div className=" text-slate-800 bg-slate-200 rounded-lg p-3  self-end">
-                    {item.prompt}
-                  </div>
-                  {item.response && (
-                    <div className=" text-slate-700 p-3 rounded-md flex flex-row gap-2 self-start ">
-                      <strong className="block text-sm -mt-2 font-medium">
-                        <Avatar>
-                          <AvatarFallback>AI</AvatarFallback>
-                        </Avatar>
-                      </strong>
-                      <span className="chat-message-content">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {item.response}
-                        </ReactMarkdown>
-                      </span>
-                    </div>
-                  )}
-                </div>
-              ))}
-              <div ref={conversationEndRef} />
-            </div>
-          </ScrollArea>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-4">
-          <div className="flex items-center gap-2 w-full">
-            <Input
-              type="text"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Enter your question here..."
-              className="rounded-full  px-4 sm:px-8 text-md sm:text-lg h-[60px] "
-            />
-            <Button
-              onClick={handleSubmit}
-              size="icon"
-              className="rounded-full p-4 flex items-center justify-center">
-              {loading ? (
-                <Loader2 className="animate-spin text-white" />
-              ) : (
-                <ArrowUp strokeWidth={3} />
-              )}
-            </Button>
-          </div>
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-        </CardFooter>
-      </Card>
+    <div className="bg-gray h-screen w-screen fixed  sm:px-8 lg:px-40">
+      <AiProfileName userProfileName={agentsName} />
+      <ScrollArea className=" h-full p-2 pt-[52px] lg:pt-[84px] pb-[84px]  w-full">
+        <ChatConversation conversation={conversation}>
+          <div ref={conversationEndRef} />
+        </ChatConversation>
+      </ScrollArea>
+      <ChatInput
+        prompt={prompt}
+        setPrompt={setPrompt}
+        isLoading={loading}
+        handleSubmit={handleSubmit}>
+        {error && <p className="text-red-500 text-sm my-1">{error}</p>}
+      </ChatInput>
     </div>
   );
 };
