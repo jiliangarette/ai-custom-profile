@@ -22,7 +22,7 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://mocki.io/v1/9b33ddfd-403f-44f2-b5e5-caa89b0c6001"
+          "https://mocki.io/v1/6c1444f6-a0b4-46c5-82c2-468e88687c97"
         );
         if (!response.ok) {
           throw new Error("Failed to fetch data");
