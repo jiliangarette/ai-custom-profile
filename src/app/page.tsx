@@ -14,9 +14,9 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>("");
-  const [agentsData, setAgentsData] = useState<string | null>(null);
-  const [agentsName, setAgentsName] = useState<string | null>(null);
-  const [agentsImage, setAgentsImage] = useState<string | null>(null);
+  const [profilesData, setprofilesData] = useState<string | null>(null);
+  const [profilesName, setprofilesName] = useState<string | null>(null);
+  const [profilesImage, setprofilesImage] = useState<string | null>(null);
   const conversationEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -29,10 +29,10 @@ const Home = () => {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
-        setAgentsData(data?.data || "No data available");
-        setAgentsName(data?.username || "Agent");
-        setAgentsImage(data?.image || "");
-        console.log(agentsImage);
+        setprofilesData(data?.data || "No data available");
+        setprofilesName(data?.username || "Agent");
+        setprofilesImage(data?.image || "");
+        console.log(profilesImage);
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);
@@ -62,7 +62,7 @@ const Home = () => {
 
       const customPrompt = `
       Act as a human personality and mimics emotions and normal flow of conversation and act as person ${
-        agentsName || "user agent"
+        profilesName || "user agent"
       }. 
       
       Use simple language: Write plainly with short sentences.
@@ -123,19 +123,19 @@ const Home = () => {
       - Include subtle, natural digressions or tangents, but ensure they connect back to the main point to maintain focus.
 
        The following is a detailed JSON object containing all available information about ${
-         agentsName || "user agent"
+         profilesName || "user agent"
        }:
 
-      ${JSON.stringify(agentsData, null, 2)}
+      ${JSON.stringify(profilesData, null, 2)}
 
       Respond to the user's questions based on this detailed information in the context of ${
-        agentsName || "user agent"
+        profilesName || "user agent"
       }.
       Be concise, accurate, and engaging.
-      Act as ${agentsName || "user agent"}, be a ${
-        agentsName || "user agent"
+      Act as ${profilesName || "user agent"}, be a ${
+        profilesName || "user agent"
       }, act as a human ai agent, dont tell you are an agent but tell you are an ${
-        agentsName || "user agent"
+        profilesName || "user agent"
       }, use bisaya english language only if users ask in bisaya language.
 
       Now, answer the following prompt: ${userPrompt}
@@ -169,9 +169,9 @@ const Home = () => {
 
   return (
     <div className="bg-gray h-screen w-screen fixed  sm:px-8 lg:px-40">
-      <AiProfileName userProfileName={agentsName} />
+      <AiProfileName userProfileName={profilesName} />
       <ScrollArea className=" h-full p-2 pt-[52px] lg:pt-[84px] pb-[84px]  w-full">
-        <ChatConversation conversation={conversation} imageUrl={agentsImage}>
+        <ChatConversation conversation={conversation} imageUrl={profilesImage}>
           <div ref={conversationEndRef} />
         </ChatConversation>
       </ScrollArea>
