@@ -22,9 +22,9 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "https://mocki.io/v1/6c1444f6-a0b4-46c5-82c2-468e88687c97"
-        );
+       const response = await fetch(
+         `https://mocki.io/v1/${process.env.NEXT_PUBLIC_API_ID}`
+       );
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
