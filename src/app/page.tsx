@@ -16,6 +16,7 @@ const Home = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [agentsData, setAgentsData] = useState<string | null>(null);
   const [agentsName, setAgentsName] = useState<string | null>(null);
+  const [agentsImage, setAgentsImage] = useState<string | null>(null);
   const conversationEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -29,7 +30,9 @@ const Home = () => {
         }
         const data = await response.json();
         setAgentsData(data?.data || "No data available");
-        setAgentsName(data?.user || "Agent");
+        setAgentsName(data?.username || "Agent");
+        setAgentsImage(data?.image || "");
+        console.log(agentsImage);
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);
@@ -168,7 +171,7 @@ const Home = () => {
     <div className="bg-gray h-screen w-screen fixed  sm:px-8 lg:px-40">
       <AiProfileName userProfileName={agentsName} />
       <ScrollArea className=" h-full p-2 pt-[52px] lg:pt-[84px] pb-[84px]  w-full">
-        <ChatConversation conversation={conversation}>
+        <ChatConversation conversation={conversation} imageUrl={agentsImage}>
           <div ref={conversationEndRef} />
         </ChatConversation>
       </ScrollArea>

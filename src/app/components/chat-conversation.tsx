@@ -1,7 +1,11 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Avatar, AvatarFallback } from "@/app/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/app/components/ui/avatar";
 
 interface ConversationItem {
   prompt: string;
@@ -10,11 +14,13 @@ interface ConversationItem {
 
 interface ChatConversationProps {
   conversation: ConversationItem[];
+  imageUrl: string | null;
   children?: React.ReactNode;
 }
 
 const ChatConversation: React.FC<ChatConversationProps> = ({
   conversation,
+  imageUrl,
   children,
 }) => {
   return (
@@ -29,6 +35,13 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
               <div className="text-slate-700 p-3 rounded-md flex flex-row gap-2 self-start">
                 <strong className="block text-sm -mt-2 font-medium">
                   <Avatar>
+                    <AvatarImage
+                      src={
+                        imageUrl ||
+                        "https://i.pinimg.com/originals/90/3a/9b/903a9b6e2a7912508e0a9de7f6b35abc.gif"
+                      }
+                      alt="AI"
+                    />
                     <AvatarFallback>AI</AvatarFallback>
                   </Avatar>
                 </strong>
