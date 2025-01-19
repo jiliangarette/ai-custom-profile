@@ -22,25 +22,25 @@
 
 The current code uses a mock API to fetch profile data:
 
-    ```js
+    
     const response = await fetch(
         `https://mocki.io/v1/${process.env.NEXT_PUBLIC_API_ID}`
     );
-    ```
+    
 
 To use your own API, replace the URL above with your actual API:
 
-    ```js
+   
     const response = await fetch('your-api-endpoint-url');
-    ```
+    
 
 ### JSON response format:
 
-    ```json
+    
     {
       "username": "John Doe",
       "image": "https://i.pinimg.com/736x/48/8c/06/488c06e3722a90bc2b093247bbf75322.jpg",
       "data": "John Doe offers daily advice and reflections to keep you motivated. His insights focus on personal growth, mindfulness, and productivity."
     }
-    ```
+   
 
