@@ -1,7 +1,7 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Avatar, AvatarFallback } from "@/app/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface ConversationItem {
   prompt: string;
@@ -32,7 +32,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
                     <AvatarFallback>AI</AvatarFallback>
                   </Avatar>
                 </strong>
-                <span className="chat-message-content overflow-x-auto max-w-[278px] sm:mx-w-[340px] lg:max-w-none">
+                <span className="chat-message-content overflow-x-auto max-w-[278px] sm:mx-w-[500px] md:max-w-none">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {item.response}
                   </ReactMarkdown>
