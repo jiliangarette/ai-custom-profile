@@ -222,20 +222,3 @@ body {
 .chat-message-content td {
   display: table-cell;
 }
-
-@keyframes tilt {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(2deg);
-  }
-  75% {
-    transform: rotate(-2deg);
-  }
-}
-
-.animate-tilt {
-  animation: tilt 6s ease-in-out infinite;
-}

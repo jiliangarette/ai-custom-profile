@@ -36,6 +36,7 @@ const AddProfileForm = () => {
       />
       <textarea
         placeholder="Data"
+        className="bg-red-200 p-3"
         value={data}
         onChange={(e) => setData(e.target.value)}
         required></textarea>
