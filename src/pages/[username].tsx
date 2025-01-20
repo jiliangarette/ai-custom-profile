@@ -23,6 +23,7 @@ const UserPage = () => {
   const [agentsData, setAgentsData] = useState<string | null>(null);
   const [agentsName, setAgentsName] = useState<string | null>(null);
   const [profilesImage, setProfilesImage] = useState<string | null>(null);
+  const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]); // New state for suggested prompts
   const conversationEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -31,24 +32,44 @@ const UserPage = () => {
     const fetchData = async () => {
       const slug = String(username).toLowerCase();
 
-      const { data, error } = await supabase
+      const { data: profileData, error: profileError } = await supabase
         .from("profiledata")
-        .select("*")
+        .select("id, username, image, data")
         .ilike("username", slug);
-      if (error) {
-        setError(error.message);
-        console.error("Error fetching data:", error.message);
-      } else if (data && data.length > 0) {
-        setAgentsData(data[0]?.data || "No data available");
-        setAgentsName(data[0]?.username || "Agent");
-        setProfilesImage(data[0]?.image || "");
+
+      if (profileError) {
+        setError(profileError.message);
+        console.error("Error fetching profile data:", profileError.message);
+        return;
+      }
+
+      if (profileData && profileData.length > 0) {
+        const profileId = profileData[0]?.id;
+
+        setAgentsData(profileData[0]?.data || "No data available");
+        setAgentsName(profileData[0]?.username || "Agent");
+        setProfilesImage(profileData[0]?.image || "");
+
+        const { data: promptsData, error: promptsError } = await supabase
+          .from("suggested_prompts")
+          .select("prompt")
+          .eq("profile_id", profileId);
+
+        if (promptsError) {
+          console.error(
+            "Error fetching suggested prompts:",
+            promptsError.message
+          );
+        } else if (promptsData) {
+          setSuggestedPrompts(promptsData.map((p) => p.prompt));
+        }
       } else {
-        setError("");
+        setError("No profile data found");
       }
     };
+
     fetchData();
   }, [username]);
-  console.log(conversation);
 
   const handleSubmit = () => {
     if (prompt) {
@@ -65,7 +86,7 @@ const UserPage = () => {
   };
 
   return (
-    <div className=" h-screen w-screen fixed sm:px-8 lg:px-40">
+    <div className="h-screen w-screen fixed sm:px-8 lg:px-40">
       <AiProfileName userProfileName={agentsName} />
       <ScrollArea className="h-full p-2 pt-[52px] lg:pt-[84px] pb-[84px] w-full hide-scrollbar">
         <ChatConversation conversation={conversation} avatarUrl={profilesImage}>
@@ -76,6 +97,7 @@ const UserPage = () => {
       <ChatInput
         prompt={prompt}
         setPrompt={setPrompt}
+        suggestedPrompt={suggestedPrompts}
         isTyping={!!prompt || conversation.length > 0}
         isLoading={loading}
         handleSubmit={handleSubmit}>
