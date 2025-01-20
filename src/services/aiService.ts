@@ -65,7 +65,7 @@ export const fetchAIResponse = async (
       - Tie in seasonal elements or current trends when relevant.
 
       # STRUCTURAL ELEMENTS
-      - Mix paragraph lengths (1 to 7 sentences) 
+      - Mix paragraph lengths (1 to 3 sentences) 
       - Use bulleted lists sparingly and naturally
       - Include conversational subheadings
       - Ensure logical coherence with dynamic rhythm across paragraphs
