@@ -12,6 +12,7 @@ interface ChatInputProps {
   handleSubmit: () => void;
   children?: React.ReactNode;
   isTyping: boolean;
+  suggestedPrompt: string[];
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({
@@ -20,6 +21,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
   setPrompt,
   isLoading,
   isTyping,
+  suggestedPrompt,
   handleSubmit,
 }) => {
   const [shouldSubmit, setShouldSubmit] = useState(false); // Track
@@ -45,20 +47,17 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
   return (
     <div className="flex flex-col gap-2 lg:mx-auto rounded-t-md h-20 bg-white mx-2 place-items-center justify-center z-10 fixed bottom-0 right-0 left-0">
-      {!isTyping && (
+      {!isTyping && suggestedPrompt.length > 0 && (
         <div className="flex justify-center fixed top-1/2 gap-2">
-          <Button
-            className="px-4 py-2 w-full"
-            variant="secondary"
-            onClick={() => handleQuickPrompt("What is your techstack?")}>
-            What is your techstack?
-          </Button>
-          <Button
-            className="px-4 py-2 w-full"
-            variant="secondary"
-            onClick={() => handleQuickPrompt("What are your hobbies?")}>
-            What are your hobbies?
-          </Button>
+          {suggestedPrompt.map((prompt, index) => (
+            <Button
+              key={index}
+              className="px-4 py-2 w-full"
+              variant="secondary"
+              onClick={() => handleQuickPrompt(prompt)}>
+              {prompt}
+            </Button>
+          ))}
         </div>
       )}
       <div className="flex gap-2 w-full place-items-center justify-center mx-auto">
