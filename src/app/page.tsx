@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Building2, User } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Image from "next/image";
@@ -87,83 +87,6 @@ export default function LandingPage() {
               Get Your Profile <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
-        </div>
-      </section>
-
-      <section className="container mx-auto px-4 py-24">
-        <div className="grid gap-12 lg:grid-cols-2">
-          <Card className="relative overflow-hidden p-6 lg:p-8">
-            <div className="absolute right-0 top-0 h-24 w-24 -translate-y-8 translate-x-8 rounded-full bg-slate-100" />
-            <div className="relative space-y-4">
-              <User className="h-10 w-10 text-slate-500" />
-              <h3 className="text-2xl font-bold">Personal AI Profile</h3>
-              <p className="text-gray-500">
-                Create an AI version of yourself that can share your story,
-                skills, and experiences. Perfect for:
-              </p>
-              <ul className="space-y-2 text-gray-500">
-                <li className="flex items-center gap-2">
-                  <ArrowRight className="h-4 w-4 text-slate-500" />
-                  Professionals showcasing their portfolio
-                </li>
-                <li className="flex items-center gap-2">
-                  <ArrowRight className="h-4 w-4 text-slate-500" />
-                  Creators sharing their journey and work
-                </li>
-                <li className="flex items-center gap-2">
-                  <ArrowRight className="h-4 w-4 text-slate-500" />
-                  Individuals building their personal brand
-                </li>
-              </ul>
-            </div>
-          </Card>
-
-          <Card className="relative overflow-hidden p-6 lg:p-8">
-            <div className="absolute right-0 top-0 h-24 w-24 -translate-y-8 translate-x-8 rounded-full bg-slate-100" />
-            <div className="relative space-y-4">
-              <Building2 className="h-10 w-10 text-slate-500" />
-              <h3 className="text-2xl font-bold">Business AI Profile</h3>
-              <p className="text-gray-500">
-                Empower your business with an AI representative that knows your
-                products and services inside out. Ideal for:
-              </p>
-              <ul className="space-y-2 text-gray-500">
-                <li className="flex items-center gap-2">
-                  <ArrowRight className="h-4 w-4 text-slate-500" />
-                  Customer support and FAQ handling
-                </li>
-                <li className="flex items-center gap-2">
-                  <ArrowRight className="h-4 w-4 text-slate-500" />
-                  Product information and specifications
-                </li>
-                <li className="flex items-center gap-2">
-                  <ArrowRight className="h-4 w-4 text-slate-500" />
-                  Company information and branding
-                </li>
-              </ul>
-            </div>
-          </Card>
-        </div>
-      </section>
-
-      <section className="relative">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(45rem_50rem_at_top,theme(colors.indigo.100),white)]" />
-        <div className="container mx-auto px-4 py-24 text-center">
-          <div className="mx-auto max-w-2xl space-y-8">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-              Ready to Create Your AI Profile?
-            </h2>
-            <p className="mx-auto max-w-[600px] text-gray-500 md:text-xl">
-              Join the future of digital presence. Create your personal or
-              business AI profile today and start engaging with your audience in
-              a whole new way.
-            </p>
-            <Button asChild size="lg" className="gap-2">
-              <Link href="/create">
-                Get Started Now <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
         </div>
       </section>
     </div>
