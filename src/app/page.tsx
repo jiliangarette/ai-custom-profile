@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Image from "next/image";
+import { Input } from "@/components/ui/input";
 
 interface Profile {
   id: string;
@@ -16,6 +16,7 @@ interface Profile {
 
 export default function LandingPage() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -34,6 +35,13 @@ export default function LandingPage() {
     fetchProfiles();
   }, []);
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (username.trim()) {
+      window.location.href = `https://aiprofile.com/${username}`;
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <section className="relative flex flex-col items-center justify-center space-y-10 px-4 py-24 text-center lg:py-32">
@@ -50,6 +58,27 @@ export default function LandingPage() {
             your business. Share knowledge, answer questions, and engage
             authentically.
           </p>
+        </div>
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <form
+            onSubmit={handleSubmit}
+            className="flex w-full max-w-sm items-center space-x-2">
+            <div className="relative flex-1">
+              <div className="absolute inset-y-0 left-3 px-2 flex items-center pointer-events-none text-muted-foreground">
+                aiprofile.com/
+              </div>
+              <Input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className=" p-8 px-10 pl-[120px]"
+                placeholder="username"
+              />
+            </div>
+            <Button type="submit" className="w-20 p-8 text-lg" size="default">
+              Claim
+            </Button>
+          </form>
         </div>
 
         <div className="relative flex-wrap flex gap-2 flex-row">
@@ -79,14 +108,6 @@ export default function LandingPage() {
               </Card>
             </Link>
           ))}
-        </div>
-
-        <div className="flex flex-col gap-4 sm:flex-row">
-          <Button asChild size="lg" className="gap-2">
-            <Link href="/admin">
-              Get Your Profile <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
         </div>
       </section>
     </div>
