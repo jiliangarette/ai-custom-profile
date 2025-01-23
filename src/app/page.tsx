@@ -106,7 +106,7 @@ export default function LandingPage() {
                 style={{
                   fontSize: "clamp(32px, 10.5vmin, 88px)",
                 }}>
-                Create and customize your Linktree in minutes
+                Create and customize your Profile in minutes
               </h1>
               <p className=" text-[#502274] font-medium md:text-xl">
                 Connect your TikTok, Instagram, Twitter, website, store, videos,
