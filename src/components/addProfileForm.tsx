@@ -3,6 +3,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const AddProfileForm: React.FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -32,19 +33,25 @@ const AddProfileForm: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 p-4 flex items-center justify-center max-w-[800px] mx-auto w-full border">
       <form onSubmit={handleSubmit} className="w-full max-w-[1300px] space-y-6">
-        <div className="relative max-w-[243px] my-1">
-          <div className="absolute inset-y-0 left-3 text-md font-semibold px-2 flex items-center pointer-events-none text-muted-foreground">
-            aiprofile.com/
+        <div className="flex gap-1">
+          <Avatar className="h-[62px] w-[62px]">
+            <AvatarImage src={image} alt="AI" />
+            <AvatarFallback>AI</AvatarFallback>
+          </Avatar>
+          <div className="relative max-w-[243px] my-1">
+            <div className="absolute inset-y-0 left-3 text-md font-semibold px-2 flex items-center pointer-events-none text-muted-foreground">
+              aiprofile.com/
+            </div>
+            <Input
+              id="username"
+              placeholder="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className="  pl-[122px] bg-white border-none min-w-[243px] sm:min-w-[254px] h-[62px] text-md font-medium text-slate-800"
+              maxLength={15}
+            />
           </div>
-          <Input
-            id="username"
-            placeholder="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            className="  pl-[122px] bg-white border-none min-w-[243px] sm:min-w-[254px] h-[62px] text-md font-semibold text-slate-800"
-            maxLength={15}
-          />
         </div>
 
         <div className="space-y-4">
