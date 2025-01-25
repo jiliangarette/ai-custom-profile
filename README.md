@@ -1,1 +1,1 @@
-with nextjs and supabase as database
+nextjs and supabase as database
