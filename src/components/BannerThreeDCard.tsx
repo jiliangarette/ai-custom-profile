@@ -20,7 +20,10 @@ export function BannerThreeDCard() {
             />
           </CardItem>
         </div>
-        <CardItem translateZ="50" className="w-full flex justify-center ">
+        <CardItem
+          translateZ="50"
+          className="w-full flex justify-center relative">
+          <div className="w-8 h-8 bg-[#0a128e] rounded-full absolute top-8 mx-auto"></div>
           <Image
             src="https://i.pinimg.com/736x/f5/5b/2c/f55b2c1bbbaaad3072ca9c5a580bd8d0.jpg"
             alt="image"

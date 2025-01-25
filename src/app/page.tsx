@@ -37,13 +37,6 @@ export default function LandingPage() {
     fetchProfiles();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (username.trim()) {
-      window.location.href = `https://aiprofile.com/${username}`;
-    }
-  };
-
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
       <div className="bg-[#254f1a]  flex justify-center w-full">
@@ -64,30 +57,28 @@ export default function LandingPage() {
                 profiles.
               </p>
             </div>
-            <div className="flex flex-col gap-4 sm:flex-">
-              <form
-                onSubmit={handleSubmit}
-                className="flex w-full flex-row gap-x-4 flex-wrap ">
-                <div className="relative max-w-[243px] my-1">
-                  <div className="absolute inset-y-0 left-3 text-md font-semibold px-2 flex items-center pointer-events-none text-muted-foreground">
-                    aiprofile.com/
-                  </div>
-                  <Input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="  pl-[122px] bg-white border-none min-w-[243px] sm:min-w-[254px] h-[62px] text-md font-semibold text-slate-800"
-                    maxLength={15}
-                    placeholder="yourname"
-                  />
+            <div className="flex flex-col gap-2 sm:gap-1 sm:flex-col">
+              <div className="relative max-w-[243px] ">
+                <div className="absolute inset-y-0 left-3 text-md font-semibold px-2 flex items-center pointer-events-none text-muted-foreground">
+                  aiprofile.com/
                 </div>
+                <Input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="  pl-[122px] bg-white border-none min-w-[243px] sm:min-w-[254px] h-[62px] text-md font-semibold text-slate-800"
+                  maxLength={15}
+                  placeholder="yourname"
+                />
+              </div>
+              <Link href="/admin/create-profile">
                 <Button
                   type="submit"
                   className="h-[62px] min-w-[212px] text-md rounded-full font-semibold bg-[#e9c0e9] text-slate-800"
                   size="default">
                   Claim your AIprofile
                 </Button>
-              </form>
+              </Link>
             </div>
           </div>
           <div className="w-full sm:h-full flex flex-col  justify-center place-items-center">
@@ -115,16 +106,12 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="flex flex-col gap-4 sm:flex-row">
-              <form
-                onSubmit={handleSubmit}
-                className="flex w-full flex-row gap-x-4 flex-wrap ">
-                <Button
-                  type="submit"
-                  className="h-[62px] min-w-[212px]  text-md rounded-full font-semibold bg-[#502274] text-slate-100"
-                  size="default">
-                  Get started for free
-                </Button>
-              </form>
+              <Button
+                type="submit"
+                className="h-[62px] min-w-[212px]  text-md rounded-full font-semibold bg-[#502274] text-slate-100"
+                size="default">
+                Get started for free
+              </Button>
             </div>
           </div>
           <div className="w-full h-full flex py-20 justify-center place-items-center">
