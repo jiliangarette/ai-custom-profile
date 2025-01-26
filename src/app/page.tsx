@@ -88,30 +88,32 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
-      <div className="bg-[#e9c0e9]  flex justify-center w-full">
+      <div className="bg-[#502274]  flex justify-center w-full">
         <div className="sm:h-screen flex sm:flex-row-reverse flex-col py-28 justify-center w-full  max-w-[1300px]">
           <div className="flex flex-col justify-center w-full  h-full gap-8 px-4 ">
             <div className="space-y-3   w-full">
               <h1
-                className=" font-extrabold  leading-none tracking-tight text-[#502274]"
+                className=" font-extrabold  leading-none tracking-tight text-[#e9c0e9]"
                 style={{
                   fontSize: "clamp(32px, 10.5vmin, 88px)",
                 }}>
                 Create and customize your Profile in minutes
               </h1>
-              <p className=" text-[#502274] font-medium md:text-xl">
+              <p className=" text-[#e9c0e9] font-medium md:text-xl">
                 Connect your TikTok, Instagram, Twitter, website, store, videos,
                 music, podcast, events and more. It all comes together in a link
                 in bio landing page designed to convert.
               </p>
             </div>
             <div className="flex flex-col gap-4 sm:flex-row">
-              <Button
-                type="submit"
-                className="h-[62px] min-w-[212px]  text-md rounded-full font-semibold bg-[#502274] text-slate-100"
-                size="default">
-                Get started for free
-              </Button>
+              <Link href="/admin/create-profile">
+                <Button
+                  type="submit"
+                  className="h-[62px] min-w-[212px]  text-md rounded-full font-semibold bg-[#e9c0e9] text-slate-700"
+                  size="default">
+                  Get started for free
+                </Button>
+              </Link>
             </div>
           </div>
           <div className="w-full h-full flex py-20 justify-center place-items-center">
