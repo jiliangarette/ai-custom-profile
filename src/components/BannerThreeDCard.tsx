@@ -10,7 +10,9 @@ export function BannerThreeDCard() {
     <CardContainer className="inter-var w-full  min-w-80 ">
       <CardBody className="relative group/card w-full sm:w-[33rem] flex h-auto rounded-xl    ">
         <div className="absolute right-0 sm:right-4 top-20">
-          <CardItem translateZ="25" className="w-full flex justify-center ">
+          <CardItem
+            translateZ="25"
+            className="w-full flex justify-center select-none ">
             <Image
               src="https://i.pinimg.com/736x/d7/3d/8f/d73d8f2884276e5cf356653d505ea3dd.jpg"
               alt="image"
