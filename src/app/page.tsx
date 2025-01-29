@@ -11,6 +11,7 @@ import { BannerThreeDCard } from "@/components/BannerThreeDCard";
 import { ActionThreeDCard } from "@/components/ActionThreeDCard";
 import SocialImageStacking from "@/components/SocialImageStacking";
 import { Bot } from "lucide-react";
+import Footer from "@/components/Footer";
 
 interface Profile {
   id: string;
@@ -78,7 +79,7 @@ export default function LandingPage() {
                   type="submit"
                   className="h-[62px] min-w-[212px] text-md rounded-full font-semibold bg-[#e9c0e9] text-slate-800"
                   size="default">
-                  Claim your AIprofile
+                  Claim your Profile
                 </Button>
               </Link>
             </div>
@@ -167,35 +168,95 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
-      <div className="bg-slate-200  flex justify-center w-full h-screen place-items-center">
-        <div className="relative overflow-x-scroll flex gap-2 flex-row w-screen place-items-center h-full">
-          {profiles.map((profile) => (
-            <Link
-              key={profile.id}
-              href={`/${profile.username.replace(/\s+/g, "-").toLowerCase()}`}
-              className="flip-card w-full h-fit flex place-items-center p-1 bg-black"
-              tabIndex={0}>
-              <Card className="flex flex-col flip-card-inner  w-full relative place-item-center justify-center border bg-white z-50 h-[550px]">
-                <div className="flip-card-front absolute bg-red-200 w-full h-full">
-                  <Image
-                    src={
-                      profile.image ||
-                      "https://i.pinimg.com/736x/9c/0b/44/9c0b4442c5eb323aa042644041c96414.jpg"
-                    }
-                    alt="Avatar"
-                    className="object-cover"
-                    fill={true} // Correct usage
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <div className="h-full absolute flip-card-back bg-red-400 border w-full flex place-items-center justify-center">
-                  <h2 className="text-xl font-semibold bg-pink-800 h-full w-full text-green-200 text-center flex place-items-center justify-center">
-                    /{profile.username}
-                  </h2>
-                </div>
-              </Card>
-            </Link>
-          ))}
+      <div className="bg-slate-200 flex justify-center w-full h-[400px] sm:h-[500px] place-items-center">
+        <div className="relative overflow-x-scroll hide-scrollbar flex gap-2 flex-row place-items-center h-full w-full px-2">
+          {profiles.map((profile, index) => {
+            const roundedClasses = [
+              "rounded-[20px]",
+              "rounded-[40px]",
+              "rounded-[15px]",
+              "rounded-[50px]",
+            ];
+            const classIndex = index % roundedClasses.length;
+            const roundedClass = roundedClasses[classIndex];
+
+            return (
+              <Link
+                key={profile.id}
+                href={`/${profile.username.replace(/\s+/g, "-").toLowerCase()}`}
+                className={`flip-card flex place-items-center min-h-[300px] h-[300px] max-w-[300px] min-w-[300px] w-[300px] sm:min-h-[400px] sm:h-[400px] sm:max-w-[400px] sm:min-w-[400px] sm:w-[400px]  ${roundedClass} overflow-hidden`}
+                tabIndex={0}>
+                <Card
+                  className={`flip-card-inner h-full flex flex-col w-full relative   ${roundedClass}`}>
+                  <div className="flip-card-front absolute w-full h-full">
+                    <div className="w-full h-full">
+                      <Image
+                        src={
+                          profile.image ||
+                          "https://i.pinimg.com/736x/9c/0b/44/9c0b4442c5eb323aa042644041c96414.jpg"
+                        }
+                        alt="Avatar"
+                        className={`w-full h-full object-cover ${roundedClass}`}
+                        width={400}
+                        height={400}
+                      />
+                    </div>
+
+                    <span className="sm:hidden bg-slate-200 absolute bottom-4 mx-auto text-slate-800 px-8 py-4 rounded-full font-sans  ">
+                      /{profile.username}
+                    </span>
+                  </div>
+
+                  <div
+                    className={`flip-card-back absolute w-full bg-white h-full flex justify-center items-center  ${roundedClass}`}>
+                    <h2 className=" text-center flex items-center justify-center w-full h-full">
+                      <span className="bg-slate-200 text-slate-800 px-8 py-4 rounded-full font-sans  ">
+                        /{profile.username}
+                      </span>
+                    </h2>
+                  </div>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+      <div className="bg-slate-200 flex justify-center py-8 sm:py-32 sm:px-8 flex-col w-full gap-8  place-items-center">
+        <h1
+          className=" font-extrabold  leading-none tracking-tight text-slate-800 text-center w-full"
+          style={{
+            fontSize: "clamp(32px, 10.5vmin, 88px)",
+          }}>
+          Jumpstart your corner of the internet today
+        </h1>
+        <div className="flex flex-col gap-2 sm:gap-6 sm:flex-row place-items-center justify-center w-full">
+          <div className="relative max-w-[243px] ">
+            <div className="absolute inset-y-0 left-3 text-md font-semibold px-2 flex items-center pointer-events-none text-muted-foreground">
+              aiprofile.com/
+            </div>
+            <Input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="  pl-[122px] bg-white border-none min-w-[243px] sm:min-w-[254px] h-[62px] text-md font-semibold text-slate-800"
+              maxLength={15}
+              placeholder="me"
+            />
+          </div>
+          <Link href="/admin/create-profile">
+            <Button
+              type="submit"
+              className="h-[62px] min-w-[212px] text-md rounded-full font-semibold bg-[#e9c0e9] text-slate-800"
+              size="default">
+              Claim your Profile
+            </Button>
+          </Link>
+        </div>
+      </div>
+      <div className="bg-slate-200 flex justify-center h-screen py-8 px-4 sm:px-12 flex-col  gap-4  place-items-center">
+        <Footer />
+        <div className="bg-[#e9c0e9]  w-full rounded-[40px] h-1/4 sm:h-1/3 flex place-items-center justify-center text-center font-bold text-[#502274]  sm:tracking-wide font-sans text-[70px]  sm:text-[140px]">
+          PROFILE
         </div>
       </div>
     </div>

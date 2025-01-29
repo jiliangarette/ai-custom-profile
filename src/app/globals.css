@@ -242,12 +242,12 @@ body {
 
 .flip-card {
   perspective: 1000px;
+  overflow: hidden !important;
 }
 
 .flip-card-inner {
   transition: transform 0.6s;
   transform-style: preserve-3d;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   backface-visibility: hidden;
   -moz-backface-visibility: hidden;
 }
@@ -274,4 +274,28 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.hide-scrollbar {
+  overflow-x: auto;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  height: 28px;
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #93989e;
+  border-radius: 8px;
+}
+
+.hide-scrollbar::-webkit-scrollbar-track {
+  background-color: #e2e8f0;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
