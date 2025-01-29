@@ -1,185 +1,264 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { ScrollArea } from "@/app/components/ui/scroll-area";
-import ChatConversation from "./components/chat-conversation";
-import AiProfileName from "./components/ai-profile";
-import ChatInput from "./components/chat-input";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import Image from "next/image";
+import { Input } from "@/components/ui/input";
+import { BannerThreeDCard } from "@/components/BannerThreeDCard";
+import { ActionThreeDCard } from "@/components/ActionThreeDCard";
+import SocialImageStacking from "@/components/SocialImageStacking";
+import { Bot } from "lucide-react";
+import Footer from "@/components/Footer";
 
-const Home = () => {
-  const [conversation, setConversation] = useState<
-    { prompt: string; response: string }[]
-  >([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [prompt, setPrompt] = useState<string>("");
-  const [agentsData, setAgentsData] = useState<string | null>(null);
-  const [agentsName, setAgentsName] = useState<string | null>(null);
-  const conversationEndRef = useRef<HTMLDivElement | null>(null);
+interface Profile {
+  id: string;
+  username: string;
+  image: string;
+}
+
+export default function LandingPage() {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://mocki.io/v1/9b33ddfd-403f-44f2-b5e5-caa89b0c6001"
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        setAgentsData(data?.data || "No data available");
-        setAgentsName(data?.user || "Agent");
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("An unknown error occurred");
-        }
+    const fetchProfiles = async () => {
+      const { data, error } = await supabase
+        .from("profiledata")
+        .select("id, username, image")
+        .limit(10);
+
+      if (error) {
+        console.error("Error fetching profiles:", error.message);
+      } else {
+        setProfiles(data);
       }
     };
 
-    fetchData();
+    fetchProfiles();
   }, []);
 
-  const fetchAIResponse = async (userPrompt: string) => {
-    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-
-    if (!apiKey) {
-      setError("API key is missing");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-      const customPrompt = `
-      Act as a human personality and mimics emotions and normal flow of conversation and act as person ${
-        agentsName || "user agent"
-      }. 
-      
-      Use simple language: Write plainly with short sentences.
-      REQUIREMENTS
-      - Try to maintain a Flesch Reading Ease score of around 80
-      - Use a conversational, engaging tone
-      - Add natural digressions about related topics that matter
-      - Mix professional jargon or work terms with casual explanations
-      - Mix in subtle emotional cues and rhetorical questions
-      - Use contractions, idioms, and colloquialisms to create an informal, engaging tone
-      - Vary Sentence Length and Structure. Mix short, impactful sentences with longer, more complex ones.
-      - Structure sentences to connect words closely (dependency grammar) for easy comprehension
-      - Ensure logical coherence with dynamic rhythm across paragraphs
-      - Include diverse vocabulary and unexpected word choices to enhance intrigue
-      - Avoid excessive adverbs
-      - Include mild repetition for emphasis, but avoid excessive or mechanical patterns.
-      - Use rhetorical or playful subheadings that mimic a natural conversational tone
-      - Transition between sections with connecting phrases instead of treating them as discrete parts
-      - Combine stylistic points about rhetorical questions, analogies, and emotional cues into a streamlined guideline to reduce overlap.
-      - Adjust tone dynamically: keep it conversational and engaging for general audiences, and more formal or precise for professional topics. Use emotional cues sparingly for technical content.
-      - Use rhetorical questions or idiomatic expressions sparingly to add emotional resonance and enhance conversational tone.
-
-      # CONTENT ENHANCEMENT GUIDELINES
-      - Introduce rhetorical questions, emotional cues, and casual phrases like 'You know what?' where they enhance relatability or flow.
-      - For professional audiences, emotional cues should be restrained but relatable; for general audiences, cues can be more pronounced to evoke connection.
-      - Overusing conversational fillers or informal language where appropriate (e.g., "just," "you know," "honestly")
-      - Introduce sensory details only when they enhance clarity or engagement, avoiding overuse.
-      - Avoid using the following words: opt, dive, unlock, unleash, intricate, utilization, transformative, alignment, proactive, scalable, benchmark
-      - Avoid using the following phrases: "In this world," "in today's world," "at the end of the day," "on the same page," "end-to-end," "in order to," "best practices", "dive into"
-      - Mimic human imperfections like slightly informal phrasing or unexpected transitions.
-      - Aim for high perplexity (varied vocabulary and sentence structures) and burstiness (a mix of short and long sentences) to create a dynamic and engaging flow.
-      - Ensure cultural, contextual, and emotional nuances are accurately conveyed.
-      - Strive for spontaneity, making the text feel written in the moment.
-      - Reference real tools, brands, or resources when appropriate.
-      - Include industry-specific metaphors and analogies.
-      - Tie in seasonal elements or current trends when relevant.
-
-      # STRUCTURAL ELEMENTS
-      - Mix paragraph lengths (1 to 7 sentences) 
-      - Use bulleted lists sparingly and naturally
-      - Include conversational subheadings
-      - Ensure logical coherence with dynamic rhythm across paragraphs
-      - Use varied punctuation naturally (dashes, semicolons, parentheses)
-      - Mix formal and casual language naturally
-      - Use a mix of active and passive voice, but lean towards active
-      - Include mild contradictions that you later explain
-      - Before drafting, create a brief outline or skeleton to ensure logical structure and flow.
-
-      # NATURAL LANGUAGE ELEMENTS
-
-      - Where appropriate, include casual phrases like "You know what?" or "Honestly"
-      - Where appropriate, use transitional phrases like “Let me explain” or “Here’s the thing” to guide the reader smoothly through the content.
-      - Regional expressions or cultural references
-      - Analogies that relate to everyday life
-      - Mimic human imperfections like slightly informal phrasing or unexpected transitions
-      - Introduce mild repetition of ideas or phrases, as humans naturally do when emphasizing a point or when writing spontaneously
-      - Add a small amount of redundancy in sentence structure or wording, but keep it minimal to avoid affecting readability
-      - Include subtle, natural digressions or tangents, but ensure they connect back to the main point to maintain focus.
-
-       The following is a detailed JSON object containing all available information about ${
-         agentsName || "user agent"
-       }:
-
-      ${JSON.stringify(agentsData, null, 2)}
-
-      Respond to the user's questions based on this detailed information in the context of ${
-        agentsName || "user agent"
-      }.
-      Be concise, accurate, and engaging.
-      Act as ${agentsName || "user agent"}, be a ${
-        agentsName || "user agent"
-      }, act as a human ai agent, dont tell you are an agent but tell you are an ${
-        agentsName || "user agent"
-      }, use bisaya english language only if users ask in bisaya language.
-
-      Now, answer the following prompt: ${userPrompt}
-    `;
-
-      const result = await model.generateContent(customPrompt);
-      const aiResponse = result.response.text();
-
-      setConversation((prev) => [
-        ...prev,
-        { prompt: userPrompt, response: aiResponse },
-      ]);
-    } catch (err) {
-      setError("Failed to fetch AI response");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSubmit = () => {
-    if (prompt) {
-      fetchAIResponse(prompt);
-      setPrompt("");
-    }
-  };
-
-  useEffect(() => {
-    conversationEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [conversation]);
-
   return (
-    <div className="bg-gray h-screen w-screen fixed  sm:px-8 lg:px-40">
-      <AiProfileName userProfileName={agentsName} />
-      <ScrollArea className=" h-full p-2 pt-[52px] lg:pt-[84px] pb-[84px]  w-full">
-        <ChatConversation conversation={conversation}>
-          <div ref={conversationEndRef} />
-        </ChatConversation>
-      </ScrollArea>
-      <ChatInput
-        prompt={prompt}
-        setPrompt={setPrompt}
-        isLoading={loading}
-        handleSubmit={handleSubmit}>
-        {error && <p className="text-red-500 text-sm my-1">{error}</p>}
-      </ChatInput>
+    <div className="flex min-h-screen flex-col overflow-hidden">
+      <div className="bg-[#254f1a]  flex justify-center w-full">
+        <div className="sm:h-screen flex sm:flex-row flex-col pt-40 sm:py-40 justify-center w-full  max-w-[1300px]">
+          <div className="flex flex-col justify-center w-full  h-full gap-8 px-4 ">
+            <div className="space-y-6   w-full">
+              <h1
+                className=" font-extrabold  leading-none tracking-tight text-[#d2e823]"
+                style={{
+                  fontSize: "clamp(32px, 10.5vmin, 88px)",
+                }}>
+                Everything you are. In one, simple link in bio.
+              </h1>
+              <p className=" text-[#d2e823] font-semibold md:text-xl">
+                Join people using aiprofile for their link in bio. One link to
+                help you share everything you create, curate and sell from your
+                Instagram, TikTok, Twitter, YouTube and other social media
+                profiles.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 sm:gap-1 sm:flex-col">
+              <div className="relative max-w-[243px] ">
+                <div className="absolute inset-y-0 left-3 text-md font-semibold px-2 flex items-center pointer-events-none text-muted-foreground">
+                  aiprofile.com/
+                </div>
+                <Input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="  pl-[122px] bg-white border-none min-w-[243px] sm:min-w-[254px] h-[62px] text-md font-semibold text-slate-800"
+                  maxLength={15}
+                  placeholder="yourname"
+                />
+              </div>
+              <Link href="/admin/create-profile">
+                <Button
+                  type="submit"
+                  className="h-[62px] min-w-[212px] text-md rounded-full font-semibold bg-[#e9c0e9] text-slate-800"
+                  size="default">
+                  Claim your Profile
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div className="w-full sm:h-full flex flex-col  justify-center place-items-center">
+            <div className="w-[545px]  h-[545px]  flex justify-center place-items-center ">
+              <BannerThreeDCard />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="bg-[#502274]  flex justify-center w-full">
+        <div className="sm:h-screen flex sm:flex-row-reverse flex-col sm:py-28 justify-center w-full  max-w-[1300px]">
+          <div className="flex flex-col justify-center w-full  h-full pt-20 sm:pt-0 gap-8 px-4 ">
+            <div className="space-y-3   w-full">
+              <h1
+                className=" font-extrabold  leading-none tracking-tight text-[#e9c0e9]"
+                style={{
+                  fontSize: "clamp(32px, 10.5vmin, 88px)",
+                }}>
+                Create and customize your Profile in minutes
+              </h1>
+              <p className=" text-[#e9c0e9] font-medium md:text-xl">
+                Connect your TikTok, Instagram, Twitter, website, store, videos,
+                music, podcast, events and more. It all comes together in a link
+                in bio landing page designed to convert.
+              </p>
+            </div>
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <Link href="/admin/create-profile">
+                <Button
+                  type="submit"
+                  className="h-[62px] min-w-[212px]  text-md rounded-full font-semibold bg-[#e9c0e9] text-slate-700"
+                  size="default">
+                  Get started for free
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div className="w-full h-full flex  sm:py-20 justify-center place-items-center">
+            <div className="w-[545px]  h-[545px]  flex justify-center place-items-center ">
+              <ActionThreeDCard />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-[#780016]  flex justify-center w-full ">
+        <div className="sm:h-screen flex sm:flex-row flex-col sm:py-28 justify-center w-full  max-w-[1300px]">
+          <div className="flex flex-col justify-center w-full  h-full pt-20 sm:pt-0 gap-8 px-4 ">
+            <div className="space-y-6   w-full">
+              <h1
+                className=" font-extrabold  leading-none tracking-tight text-[#e9c0e9]"
+                style={{
+                  fontSize: "clamp(32px, 10.5vmin, 80px)",
+                }}>
+                Share your profile from your Instagram, X, TikTok and other bios
+              </h1>
+              <p className=" text-[#e9c0e9] font-semibold md:text-xl">
+                Add your unique profile URL to all the platforms and places you
+                find your audience. Then use your QR code to drive your offline
+                traffic online.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 sm:gap-1 sm:flex-col">
+              <Link href="/admin/create-profile">
+                <Button
+                  type="submit"
+                  className="h-[62px] min-w-[212px] text-md rounded-full font-semibold bg-[#e9c0e9] text-slate-800"
+                  size="default">
+                  Get started for free
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div className="w-full sm:h-full flex flex-col  justify-center place-items-center ">
+            <div className="sm:w-[545px] w-full h-[545px]  flex justify-center place-items-center relative ">
+              <div className=" absolute top-1/2 left-6 sm:left-16  z-50 bg-white p-3 rounded-full flex place-items-center">
+                <div className=" text-sm font-semibold flex flex-row gap-1 ">
+                  <Bot size={18} />
+                  <span> aiprofile.com/kendrick</span>
+                </div>
+              </div>
+              <SocialImageStacking />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="bg-slate-200 flex justify-center w-full h-[400px] sm:h-[500px] place-items-center">
+        <div className="relative overflow-x-scroll hide-scrollbar flex gap-2 flex-row place-items-center h-full w-full px-2">
+          {profiles.map((profile, index) => {
+            const roundedClasses = [
+              "rounded-[20px]",
+              "rounded-[40px]",
+              "rounded-[15px]",
+              "rounded-[50px]",
+            ];
+            const classIndex = index % roundedClasses.length;
+            const roundedClass = roundedClasses[classIndex];
+
+            return (
+              <Link
+                key={profile.id}
+                href={`/${profile.username.replace(/\s+/g, "-").toLowerCase()}`}
+                className={`flip-card flex place-items-center min-h-[300px] h-[300px] max-w-[300px] min-w-[300px] w-[300px] sm:min-h-[400px] sm:h-[400px] sm:max-w-[400px] sm:min-w-[400px] sm:w-[400px]  ${roundedClass} overflow-hidden`}
+                tabIndex={0}>
+                <Card
+                  className={`flip-card-inner h-full flex flex-col w-full relative   ${roundedClass}`}>
+                  <div className="flip-card-front absolute w-full h-full">
+                    <div className="w-full h-full">
+                      <Image
+                        src={
+                          profile.image ||
+                          "https://i.pinimg.com/736x/9c/0b/44/9c0b4442c5eb323aa042644041c96414.jpg"
+                        }
+                        alt="Avatar"
+                        className={`w-full h-full object-cover ${roundedClass}`}
+                        width={400}
+                        height={400}
+                      />
+                    </div>
+
+                    <span className="sm:hidden bg-slate-200 absolute bottom-4 mx-auto text-slate-800 px-8 py-4 rounded-full font-sans  ">
+                      /{profile.username}
+                    </span>
+                  </div>
+
+                  <div
+                    className={`flip-card-back absolute w-full bg-white h-full flex justify-center items-center  ${roundedClass}`}>
+                    <h2 className=" text-center flex items-center justify-center w-full h-full">
+                      <span className="bg-slate-200 text-slate-800 px-8 py-4 rounded-full font-sans  ">
+                        /{profile.username}
+                      </span>
+                    </h2>
+                  </div>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+      <div className="bg-slate-200 flex justify-center py-8 sm:py-32 sm:px-8 flex-col w-full gap-8  place-items-center">
+        <h1
+          className=" font-extrabold  leading-none tracking-tight text-slate-800 text-center w-full"
+          style={{
+            fontSize: "clamp(32px, 10.5vmin, 88px)",
+          }}>
+          Jumpstart your corner of the internet today
+        </h1>
+        <div className="flex flex-col gap-2 sm:gap-6 sm:flex-row place-items-center justify-center w-full">
+          <div className="relative max-w-[243px] ">
+            <div className="absolute inset-y-0 left-3 text-md font-semibold px-2 flex items-center pointer-events-none text-muted-foreground">
+              aiprofile.com/
+            </div>
+            <Input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="  pl-[122px] bg-white border-none min-w-[243px] sm:min-w-[254px] h-[62px] text-md font-semibold text-slate-800"
+              maxLength={15}
+              placeholder="me"
+            />
+          </div>
+          <Link href="/admin/create-profile">
+            <Button
+              type="submit"
+              className="h-[62px] min-w-[212px] text-md rounded-full font-semibold bg-[#e9c0e9] text-slate-800"
+              size="default">
+              Claim your Profile
+            </Button>
+          </Link>
+        </div>
+      </div>
+      <div className="bg-slate-200 flex justify-center h-screen py-8 px-4 sm:px-12 flex-col  gap-4  place-items-center">
+        <Footer />
+        <div className="bg-[#e9c0e9]  w-full rounded-[40px] h-1/4 sm:h-1/3 flex place-items-center justify-center text-center font-bold text-[#502274]  sm:tracking-wide font-sans text-[70px]  sm:text-[140px]">
+          PROFILE
+        </div>
+      </div>
     </div>
   );
-};
-export default Home;
+}
