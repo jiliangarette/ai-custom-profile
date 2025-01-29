@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Open_Sans, Roboto_Mono } from "next/font/google";
 
@@ -49,6 +50,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${openSans.variable} ${robotoMono.variable} font-sans`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );
