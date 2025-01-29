@@ -9,6 +9,8 @@ import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { BannerThreeDCard } from "@/components/BannerThreeDCard";
 import { ActionThreeDCard } from "@/components/ActionThreeDCard";
+import SocialImageStacking from "@/components/SocialImageStacking";
+import { Bot } from "lucide-react";
 
 interface Profile {
   id: string;
@@ -89,8 +91,8 @@ export default function LandingPage() {
         </div>
       </div>
       <div className="bg-[#502274]  flex justify-center w-full">
-        <div className="sm:h-screen flex sm:flex-row-reverse flex-col py-28 justify-center w-full  max-w-[1300px]">
-          <div className="flex flex-col justify-center w-full  h-full gap-8 px-4 ">
+        <div className="sm:h-screen flex sm:flex-row-reverse flex-col sm:py-28 justify-center w-full  max-w-[1300px]">
+          <div className="flex flex-col justify-center w-full  h-full pt-20 sm:pt-0 gap-8 px-4 ">
             <div className="space-y-3   w-full">
               <h1
                 className=" font-extrabold  leading-none tracking-tight text-[#e9c0e9]"
@@ -116,47 +118,84 @@ export default function LandingPage() {
               </Link>
             </div>
           </div>
-          <div className="w-full h-full flex py-20 justify-center place-items-center">
+          <div className="w-full h-full flex  sm:py-20 justify-center place-items-center">
             <div className="w-[545px]  h-[545px]  flex justify-center place-items-center ">
               <ActionThreeDCard />
             </div>
           </div>
         </div>
       </div>
-      <div className="bg-[#50be5033]  flex justify-center w-full">
-        <div className="sm:h-screen flex sm:flex-row flex-col py-40 justify-center w-full  max-w-[1300px]">
-          <div className="relative flex-wrap flex gap-2 flex-row">
-            {profiles.map((profile) => (
-              <Link
-                key={profile.id}
-                href={`/${profile.username
-                  .replace(/\s+/g, "-")
-                  .toLowerCase()}`}>
-                <Card className="flex flex-col items-center space-y-4 p-6">
-                  <div className="relative h-24 w-24">
-                    <div className="absolute -inset-0.5 animate-tilt rounded-full bg-gradient-to-r from-slate-500 to-slate-700" />
-                    <div className="relative h-full w-full overflow-hidden rounded-full border-2 border-white bg-slate-50">
-                      <Image
-                        src={
-                          profile.image ||
-                          "https://i.pinimg.com/736x/9c/0b/44/9c0b4442c5eb323aa042644041c96414.jpg"
-                        }
-                        alt="Avatar"
-                        width={96}
-                        height={96}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <h2 className="text-xl font-semibold">
-                      /{profile.username}
-                    </h2>
-                  </div>
-                </Card>
+
+      <div className="bg-[#780016]  flex justify-center w-full ">
+        <div className="sm:h-screen flex sm:flex-row flex-col sm:py-28 justify-center w-full  max-w-[1300px]">
+          <div className="flex flex-col justify-center w-full  h-full pt-20 sm:pt-0 gap-8 px-4 ">
+            <div className="space-y-6   w-full">
+              <h1
+                className=" font-extrabold  leading-none tracking-tight text-[#e9c0e9]"
+                style={{
+                  fontSize: "clamp(32px, 10.5vmin, 80px)",
+                }}>
+                Share your profile from your Instagram, X, TikTok and other bios
+              </h1>
+              <p className=" text-[#e9c0e9] font-semibold md:text-xl">
+                Add your unique profile URL to all the platforms and places you
+                find your audience. Then use your QR code to drive your offline
+                traffic online.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 sm:gap-1 sm:flex-col">
+              <Link href="/admin/create-profile">
+                <Button
+                  type="submit"
+                  className="h-[62px] min-w-[212px] text-md rounded-full font-semibold bg-[#e9c0e9] text-slate-800"
+                  size="default">
+                  Get started for free
+                </Button>
               </Link>
-            ))}
+            </div>
           </div>
+          <div className="w-full sm:h-full flex flex-col  justify-center place-items-center ">
+            <div className="sm:w-[545px] w-full h-[545px]  flex justify-center place-items-center relative ">
+              <div className=" absolute top-1/2 left-6 sm:left-16  z-50 bg-white p-3 rounded-full flex place-items-center">
+                <div className=" text-sm font-semibold flex flex-row gap-1 ">
+                  <Bot size={18} />
+                  <span> aiprofile.com/kendrick</span>
+                </div>
+              </div>
+              <SocialImageStacking />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="bg-slate-200  flex justify-center w-full h-screen place-items-center">
+        <div className="relative overflow-x-scroll flex gap-2 flex-row w-screen place-items-center h-full">
+          {profiles.map((profile) => (
+            <Link
+              key={profile.id}
+              href={`/${profile.username.replace(/\s+/g, "-").toLowerCase()}`}
+              className="flip-card w-full h-fit flex place-items-center p-1 bg-black"
+              tabIndex={0}>
+              <Card className="flex flex-col flip-card-inner  w-full relative place-item-center justify-center border bg-white z-50 h-[550px]">
+                <div className="flip-card-front absolute bg-red-200 w-full h-full">
+                  <Image
+                    src={
+                      profile.image ||
+                      "https://i.pinimg.com/736x/9c/0b/44/9c0b4442c5eb323aa042644041c96414.jpg"
+                    }
+                    alt="Avatar"
+                    className="object-cover"
+                    fill={true} // Correct usage
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                </div>
+                <div className="h-full absolute flip-card-back bg-red-400 border w-full flex place-items-center justify-center">
+                  <h2 className="text-xl font-semibold bg-pink-800 h-full w-full text-green-200 text-center flex place-items-center justify-center">
+                    /{profile.username}
+                  </h2>
+                </div>
+              </Card>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
