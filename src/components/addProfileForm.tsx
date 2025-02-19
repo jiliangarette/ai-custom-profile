@@ -16,6 +16,12 @@ const AddProfileForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Check if "data" input meets the minimum length requirement
+    if (data.trim().length < 200) {
+      alert("Profile data must be at least 200 characters long! ✨");
+      return;
+    }
+
     const res = await fetch("/api/addProfile", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -26,7 +32,7 @@ const AddProfileForm: React.FC = () => {
       setUsername("");
       setData("");
       setImage("");
-      alert("Profile added successfully!");
+      alert("Profile added successfully! 🎉");
     } else {
       const error = await res.json();
       alert(`Failed to add profile: ${error.error}`);
@@ -45,12 +51,12 @@ const AddProfileForm: React.FC = () => {
         </div>
       </Link>
       <form onSubmit={handleSubmit} className="w-full max-w-[1300px] space-y-6">
-        <div className="flex gap-2 group cursor-pointer w-[62px] ">
+        <div className="flex gap-2 group cursor-pointer w-[62px]">
           <Avatar
-            className="h-[62px] w-[62px] relative p-1 "
+            className="h-[62px] w-[62px] relative p-1"
             onClick={toggleImageInputVisibility}>
             {!image && (
-              <div className="absolute top-0 right-0  group-hover:bg-slate-200 opacity-90 group-hover:opacity-100 rounded-full hover:bg-slate-200 p-1">
+              <div className="absolute top-0 right-0 group-hover:bg-slate-200 opacity-90 group-hover:opacity-100 rounded-full hover:bg-slate-200 p-1">
                 <Paperclip size={18} />
               </div>
             )}
@@ -96,6 +102,7 @@ const AddProfileForm: React.FC = () => {
             value={data}
             onChange={(e) => setData(e.target.value)}
             required
+            minLength={200} 
             className="h-[62px] resize-none border-slate-200 focus-visible:ring-slate-400 placeholder:text-slate-400"
           />
         </div>
