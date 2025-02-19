@@ -50,7 +50,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
                     />
                     <AvatarFallback>AI</AvatarFallback>
                   </Avatar>
-                  <div className="bg-gray-200 text-gray-800 rounded-xl px-4 py-2 shadow-md max-w-md">
+                  <div className=" text-gray-800 rounded-xl py-2   max-w-md">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {item.response}
                     </ReactMarkdown>
