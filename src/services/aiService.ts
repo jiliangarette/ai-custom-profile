@@ -22,7 +22,7 @@ export const fetchAIResponse = async (
     setError(null);
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const customPrompt = `
       Act as a human personality and mimics emotions and normal flow of conversation and act as person ${

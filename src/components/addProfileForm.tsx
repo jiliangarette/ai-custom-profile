@@ -59,7 +59,7 @@ const AddProfileForm: React.FC = () => {
           </Avatar>
           <div className="relative max-w-[243px] my-1">
             <div className="absolute inset-y-0 left-3 text-md font-medium px-2 flex items-center pointer-events-none text-muted-foreground">
-              aiprofile.com/
+              aiprofile.sbs/
             </div>
             <Input
               id="username"

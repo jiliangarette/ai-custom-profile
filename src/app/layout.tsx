@@ -16,36 +16,37 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Your AI Profile | Personalized Digital Presence",
+  title: "Your AI Profile",
   description:
-    "Create an AI-powered digital presence that truly represents you or your business. Share knowledge, answer questions, and engage authentically.",
+    "A customizable AI profile system that allows users to personalize AI-generated personas.",
   icons: {
     icon: "/bot.svg",
   },
+  viewport: "width=device-width, initial-scale=1",
   openGraph: {
     title: "Your AI Profile | Personalized Digital Presence",
     description:
-      "Create an AI-powered digital presence that truly represents you or your business. Share knowledge, answer questions, and engage authentically.",
-    url: "https://your-website-url.com",
+      "A customizable AI profile system that allows users to personalize AI-generated personas, integrating dynamic responses and personality traits.",
+    url: "https://aiprofile.sbs",
     images: "/bot.svg",
     siteName: "Your AI Profile",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Your AI Profile | Personalized Digital Presence",
+    title: "Your AI Profile ",
     description:
-      "Create an AI-powered digital presence that truly represents you or your business. Share knowledge, answer questions, and engage authentically.",
+      "A customizable AI profile system that allows users to personalize AI-generated personas, integrating dynamic responses and personality traits.",
     images: "/bot.svg",
-    creator: "@yourtwitterhandle",
+    creator: "@jilian.dev",
   },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body className={`${openSans.variable} ${robotoMono.variable} font-sans`}>

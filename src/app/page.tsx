@@ -63,7 +63,7 @@ export default function LandingPage() {
             <div className="flex flex-col gap-2 sm:gap-1 sm:flex-col">
               <div className="relative max-w-[243px] ">
                 <div className="absolute inset-y-0 left-3 text-md font-semibold px-2 flex items-center pointer-events-none text-muted-foreground">
-                  aiprofile.com/
+                  aiprofile.sbs/
                 </div>
                 <Input
                   type="text"
@@ -160,7 +160,7 @@ export default function LandingPage() {
               <div className=" absolute top-1/2 left-6 sm:left-16  z-50 bg-white p-3 rounded-full flex place-items-center">
                 <div className=" text-sm font-semibold flex flex-row gap-1 ">
                   <Bot size={18} />
-                  <span> aiprofile.com/kendrick</span>
+                  <span> aiprofile.sbs/kendrick</span>
                 </div>
               </div>
               <SocialImageStacking />
@@ -232,7 +232,7 @@ export default function LandingPage() {
         <div className="flex flex-col gap-2 sm:gap-6 sm:flex-row place-items-center justify-center w-full">
           <div className="relative max-w-[243px] ">
             <div className="absolute inset-y-0 left-3 text-md font-semibold px-2 flex items-center pointer-events-none text-muted-foreground">
-              aiprofile.com/
+              aiprofile.sbs/
             </div>
             <Input
               type="text"
