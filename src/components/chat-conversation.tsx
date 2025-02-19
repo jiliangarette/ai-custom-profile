@@ -19,16 +19,14 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   children,
   avatarUrl,
 }) => {
-  // Reference to the end of the messages list
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to the latest message when the conversation updates
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [conversation]);
 
   return (
-    <div className="h-full overflow-auto p-6">
+    <div className="h-full overflow-auto py-6 px-2">
       <div className="flex flex-col gap-6 w-full max-w-3xl mx-auto">
         {conversation.length === 0 ? (
           <div className="text-center text-gray-500 italic">
@@ -37,13 +35,11 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
         ) : (
           conversation.map((item, index) => (
             <div key={index} className="flex flex-col gap-2">
-              {/* User's message */}
               <div className="self-end bg-slate-500 text-white rounded-xl px-4 py-2 shadow-md max-w-md">
                 {item.prompt}
               </div>
               {item.response && (
                 <div className="flex items-start gap-3 self-start">
-                  {/* AI Avatar */}
                   <Avatar className="w-10 h-10">
                     <AvatarImage
                       src={

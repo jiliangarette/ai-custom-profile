@@ -1,5 +1,6 @@
 "use client"
 
+import { ArrowUp } from "lucide-react"
 import type React from "react"
 
 import { useEffect, useState } from "react"
@@ -104,19 +105,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
             ) : (
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="22" y1="2" x2="11" y2="13" />
-                <polygon points="22 2 15 22 11 13 2 9 22 2" />
-              </svg>
+              <ArrowUp />
             )}
           </button>
         </div>
