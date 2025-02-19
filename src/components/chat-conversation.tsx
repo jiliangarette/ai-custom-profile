@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,37 +19,53 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   children,
   avatarUrl,
 }) => {
+  // Reference to the end of the messages list
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to the latest message when the conversation updates
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [conversation]);
+
   return (
-    <div className="h-full">
-      <div className="flex flex-col gap-4 w-full mx-auto h-full">
-        {conversation.map((item, index) => (
-          <div key={index} className="flex flex-col mb-4">
-            <div className="text-slate-800 bg-slate-100 rounded-lg p-2 mr-2 px-4 self-end">
-              {item.prompt}
-            </div>
-            {item.response && (
-              <div className="text-slate-700 p-3 rounded-md flex flex-row gap-2 self-start">
-                <strong className="block text-sm -mt-2 font-medium">
-                  <Avatar>
+    <div className="h-full overflow-auto p-6">
+      <div className="flex flex-col gap-6 w-full max-w-3xl mx-auto">
+        {conversation.length === 0 ? (
+          <div className="text-center text-gray-500 italic">
+            
+          </div>
+        ) : (
+          conversation.map((item, index) => (
+            <div key={index} className="flex flex-col gap-2">
+              {/* User's message */}
+              <div className="self-end bg-slate-500 text-white rounded-xl px-4 py-2 shadow-md max-w-md">
+                {item.prompt}
+              </div>
+              {item.response && (
+                <div className="flex items-start gap-3 self-start">
+                  {/* AI Avatar */}
+                  <Avatar className="w-10 h-10">
                     <AvatarImage
                       src={
                         avatarUrl ||
-                        "https://i.pinimg.com/originals/26/6b/e8/266be8ffd47b293b5aa0f3d35c19775d.gif "
+                        "https://i.pinimg.com/originals/26/6b/e8/266be8ffd47b293b5aa0f3d35c19775d.gif"
                       }
                       alt="AI"
                     />
                     <AvatarFallback>AI</AvatarFallback>
                   </Avatar>
-                </strong>
-                <span className="chat-message-content overflow-x-auto max-w-[278px] sm:mx-w-[500px] md:max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {item.response}
-                  </ReactMarkdown>
-                </span>
-              </div>
-            )}
-          </div>
-        ))}
+                  <div className="bg-gray-200 text-gray-800 rounded-xl px-4 py-2 shadow-md max-w-md">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {item.response}
+                    </ReactMarkdown>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))
+        )}
+        {/* Dummy element for auto-scrolling */}
+        <div ref={messagesEndRef} />
         {children}
       </div>
     </div>
