@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   viewport: "width=device-width, initial-scale=1",
   openGraph: {
-    title: "Your AI Profile | Personalized Digital Presence",
+    title: "Your AI Profile ",
     description:
       "A customizable AI profile system that allows users to personalize AI-generated personas, integrating dynamic responses and personality traits.",
     url: "https://aiprofile.sbs",
