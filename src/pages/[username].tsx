@@ -1,110 +1,86 @@
-"use client";
-
-import "../app/globals.css";
-import { useEffect, useRef, useState } from "react";
-import { fetchAIResponse } from "../services/aiService";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import ChatConversation from "../components/chat-conversation";
-import AiProfileName from "../components/ai-profile";
-import ChatInput from "../components/chat-input";
+import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { supabase } from "@/lib/supabaseClient";
-import { useRouter } from "next/router";
+import UserPageClient from "@/components/UserPageClient";
 
-const UserPage = () => {
-  const router = useRouter();
-  const { username } = router.query;
+interface SuggestedPrompt {
+  prompt: string;
+}
 
-  const [conversation, setConversation] = useState<
-    { prompt: string; response: string }[]
-  >([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [prompt, setPrompt] = useState<string>("");
-  const [agentsData, setAgentsData] = useState<string | null>(null);
-  const [agentsName, setAgentsName] = useState<string | null>(null);
-  const [profilesImage, setProfilesImage] = useState<string | null>(null);
-  const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]); // New state for suggested prompts
-  const conversationEndRef = useRef<HTMLDivElement | null>(null);
+interface PageProps {
+  agentsName: string;
+  profilesImage: string;
+  agentsData: string;
+  suggestedPrompts: string[];
+  shareUrl: string;
+}
 
-  useEffect(() => {
-    if (!username) return;
-
-    const fetchData = async () => {
-      const slug = String(username).toLowerCase();
-
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiledata")
-        .select("id, username, image, data")
-        .ilike("username", slug);
-
-      if (profileError) {
-        setError(profileError.message);
-        console.error("Error fetching profile data:", profileError.message);
-        return;
-      }
-
-      if (profileData && profileData.length > 0) {
-        const profileId = profileData[0]?.id;
-
-        setAgentsData(profileData[0]?.data || "No data available");
-        setAgentsName(profileData[0]?.username || "Agent");
-        setProfilesImage(profileData[0]?.image || "");
-
-        const { data: promptsData, error: promptsError } = await supabase
-          .from("suggested_prompts")
-          .select("prompt")
-          .eq("profile_id", profileId);
-
-        if (promptsError) {
-          console.error(
-            "Error fetching suggested prompts:",
-            promptsError.message
-          );
-        } else if (promptsData) {
-          setSuggestedPrompts(promptsData.map((p) => p.prompt));
-        }
-      } else {
-        setError("No profile data found");
-      }
-    };
-
-    fetchData();
-  }, [username]);
-
-  const handleSubmit = () => {
-    if (prompt) {
-      fetchAIResponse(
-        prompt,
-        agentsName,
-        agentsData,
-        setLoading,
-        setError,
-        setConversation
-      );
-      setPrompt("");
-    }
+export const getServerSideProps: GetServerSideProps<PageProps> = async (context) => {
+  const { username } = context.params as { username: string };
+  const slug = username.toLowerCase();
+  const { data: profileData, error } = await supabase
+    .from("profiledata")
+    .select("id, username, image, data")
+    .ilike("username", slug)
+    .single();
+  if (error || !profileData) {
+    return { notFound: true };
+  }
+  const { data: promptsData, error: promptsError } = await supabase
+    .from("suggested_prompts")
+    .select("prompt")
+    .eq("profile_id", profileData.id);
+  let suggestedPrompts: string[] = [];
+  if (!promptsError && promptsData) {
+    const typedPrompts = promptsData as SuggestedPrompt[];
+    suggestedPrompts = typedPrompts.map((p) => p.prompt);
+  }
+  const agentsName = profileData.username;
+  const profilesImage = profileData.image || "/default-image.png";
+  const agentsData = profileData.data || "No data available";
+  const shareUrl = `https://aiprofile.sbs/${agentsName}`;
+  return {
+    props: {
+      agentsName,
+      profilesImage,
+      agentsData,
+      suggestedPrompts,
+      shareUrl,
+    },
   };
+};
 
+const ProfilePage: React.FC<PageProps> = ({
+  agentsName,
+  profilesImage,
+  agentsData,
+  suggestedPrompts,
+  shareUrl,
+}) => {
   return (
-    <div className="h-screen w-screen fixed sm:px-8 lg:px-40">
-      <AiProfileName userProfileName={agentsName} />
-      <ScrollArea className="h-full p-2 pt-[52px] lg:pt-[84px] pb-[84px] w-full hide-scrollbar">
-        <ChatConversation conversation={conversation} avatarUrl={profilesImage}>
-          <div ref={conversationEndRef} />
-        </ChatConversation>
-      </ScrollArea>
-
-      <ChatInput
-        prompt={prompt}
-        setPrompt={setPrompt}
-        suggestedPrompt={suggestedPrompts}
-        isTyping={!!prompt || conversation.length > 0}
-        isLoading={loading}
-        handleSubmit={handleSubmit}>
-        {error && <p className="text-red-500 text-sm my-1">{error}</p>}
-      </ChatInput>
-    </div>
+    <>
+      <Head>
+        <title>Chat with {agentsName}</title>
+        <meta name="description" content={`Have a conversation with ${agentsName} on our platform.`} />
+        <meta property="og:title" content={`Chat with ${agentsName}`} />
+        <meta property="og:description" content={`Have a conversation with ${agentsName} on our platform.`} />
+        <meta property="og:image" content={profilesImage} />
+        <meta property="og:url" content={shareUrl} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`Chat with ${agentsName}`} />
+        <meta name="twitter:description" content={`Have a conversation with ${agentsName} on our platform.`} />
+        <meta name="twitter:image" content={profilesImage} />
+        <link rel="icon" href="/bot.svg" />
+      </Head>
+      <UserPageClient
+        agentsName={agentsName}
+        profilesImage={profilesImage}
+        agentsData={agentsData}
+        suggestedPrompts={suggestedPrompts}
+      />
+    </>
   );
 };
 
-export default UserPage;
+export default ProfilePage;
