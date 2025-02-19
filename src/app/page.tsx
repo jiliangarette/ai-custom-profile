@@ -69,7 +69,7 @@ export default function LandingPage() {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="  pl-[122px] bg-white border-none min-w-[243px] sm:min-w-[254px] h-[62px] text-md font-semibold text-slate-800"
+                  className="  pl-[116px] bg-white border-none min-w-[243px] sm:min-w-[254px] h-[62px] text-md font-semibold text-slate-800"
                   maxLength={15}
                   placeholder="yourname"
                 />
@@ -169,58 +169,64 @@ export default function LandingPage() {
         </div>
       </div>
       <div className="bg-slate-200 flex justify-center w-full h-[400px] sm:h-[500px] place-items-center">
-        <div className="relative overflow-x-scroll hide-scrollbar flex gap-2 flex-row place-items-center h-full w-full px-2">
-          {profiles.map((profile, index) => {
-            const roundedClasses = [
-              "rounded-[20px]",
-              "rounded-[40px]",
-              "rounded-[15px]",
-              "rounded-[50px]",
-            ];
-            const classIndex = index % roundedClasses.length;
-            const roundedClass = roundedClasses[classIndex];
+  {/* Container with overflow-hidden to hide the scrollbar */}
+  <div className="relative overflow-hidden w-full">
+    {/* 
+      The inner flex container duplicates the profiles array to allow for a seamless loop.
+      We use the custom "animate-scroll" class to animate the movement.
+    */}
+    <div className="flex animate-scroll gap-2 flex-row place-items-center h-full px-2"
+         style={{ width: "max-content" }}>
+      {[...profiles, ...profiles].map((profile, index) => {
+        const roundedClasses = [
+          "rounded-[20px]",
+          "rounded-[40px]",
+          "rounded-[15px]",
+          "rounded-[50px]",
+        ];
+        const classIndex = index % roundedClasses.length;
+        const roundedClass = roundedClasses[classIndex];
 
-            return (
-              <Link
-                key={profile.id}
-                href={`/${profile.username.replace(/\s+/g, "-").toLowerCase()}`}
-                className={`flip-card flex place-items-center min-h-[300px] h-[300px] max-w-[300px] min-w-[300px] w-[300px] sm:min-h-[400px] sm:h-[400px] sm:max-w-[400px] sm:min-w-[400px] sm:w-[400px]  ${roundedClass} overflow-hidden`}
-                tabIndex={0}>
-                <Card
-                  className={`flip-card-inner h-full flex flex-col w-full relative   ${roundedClass}`}>
-                  <div className="flip-card-front absolute w-full h-full">
-                    <div className="w-full h-full">
-                      <Image
-                        src={
-                          profile.image ||
-                          "https://i.pinimg.com/736x/9c/0b/44/9c0b4442c5eb323aa042644041c96414.jpg"
-                        }
-                        alt="Avatar"
-                        className={`w-full h-full object-cover ${roundedClass}`}
-                        width={400}
-                        height={400}
-                      />
-                    </div>
+        return (
+          <Link
+            key={index} // key can use index since it's duplicated content
+            href={`/${profile.username.replace(/\s+/g, "-").toLowerCase()}`}
+            className={`flip-card flex place-items-center min-h-[300px] h-[300px] max-w-[300px] min-w-[300px] w-[300px] sm:min-h-[400px] sm:h-[400px] sm:max-w-[400px] sm:min-w-[400px] sm:w-[400px] ${roundedClass} overflow-hidden`}
+            tabIndex={0}>
+            <Card className={`flip-card-inner h-full flex flex-col w-full relative ${roundedClass}`}>
+              <div className="flip-card-front absolute w-full h-full">
+                <div className="w-full h-full">
+                  <Image
+                    src={
+                      profile.image ||
+                      "https://i.pinimg.com/736x/9c/0b/44/9c0b4442c5eb323aa042644041c96414.jpg"
+                    }
+                    alt="Avatar"
+                    className={`w-full h-full object-cover ${roundedClass}`}
+                    width={400}
+                    height={400}
+                  />
+                </div>
+                <span className="sm:hidden bg-slate-200 absolute bottom-4 mx-auto text-slate-800 px-8 py-4 rounded-full font-sans">
+                  /{profile.username}
+                </span>
+              </div>
 
-                    <span className="sm:hidden bg-slate-200 absolute bottom-4 mx-auto text-slate-800 px-8 py-4 rounded-full font-sans  ">
-                      /{profile.username}
-                    </span>
-                  </div>
+              <div className={`flip-card-back absolute w-full bg-white h-full flex justify-center items-center ${roundedClass}`}>
+                <h2 className="text-center flex items-center justify-center w-full h-full">
+                  <span className="bg-slate-200 text-slate-800 px-8 py-4 rounded-full font-sans">
+                    /{profile.username}
+                  </span>
+                </h2>
+              </div>
+            </Card>
+          </Link>
+        );
+      })}
+    </div>
+  </div>
+</div>
 
-                  <div
-                    className={`flip-card-back absolute w-full bg-white h-full flex justify-center items-center  ${roundedClass}`}>
-                    <h2 className=" text-center flex items-center justify-center w-full h-full">
-                      <span className="bg-slate-200 text-slate-800 px-8 py-4 rounded-full font-sans  ">
-                        /{profile.username}
-                      </span>
-                    </h2>
-                  </div>
-                </Card>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
       <div className="bg-slate-200 flex justify-center py-8 sm:py-32 sm:px-8 flex-col w-full gap-8  place-items-center">
         <h1
           className=" font-extrabold  leading-none tracking-tight text-slate-800 text-center w-full"
@@ -238,7 +244,7 @@ export default function LandingPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="  pl-[122px] bg-white border-none min-w-[243px] sm:min-w-[254px] h-[62px] text-md font-semibold text-slate-800"
+              className="  pl-[116px] bg-white border-none min-w-[243px] sm:min-w-[254px] h-[62px] text-md font-semibold text-slate-800"
               maxLength={15}
               placeholder="me"
             />
